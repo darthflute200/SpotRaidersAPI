@@ -84,7 +84,7 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 app.use(cors({
-    origin: 'https://localhost:3000', 
+    origin: 'http://localhost:3000', 
     methods: 'GET,POST,PUT,DELETE', 
 }));
 app.use(bodyParser.json());
@@ -315,6 +315,9 @@ app.get("/getticket/:id", async (req, res) => {
     try {
         const ticketid = req.params.id;
         const findticket = await Ticket.findById(ticketid);
+        const FindHotel = await Otel.findOne({
+          OtelName: findticket.OtelName
+        })
 
         if (!findticket) {
             return res.status(404).json({ message: "Ticket bulunamadı" });
@@ -323,6 +326,7 @@ app.get("/getticket/:id", async (req, res) => {
             return res.status(200).json({
                 ticket: findticket,
                 image: null, 
+                Prices : FindHotel.priceList
             });
         }
 
@@ -334,9 +338,10 @@ app.get("/getticket/:id", async (req, res) => {
             return res.status(202).json({
                 ticket: findticket,
                 image: base64Image,
+                Prices : FindHotel.priceList
             });
         } else {
-            return res.status(404).json({ message: "Resim dosyası bulunamadı", ticket: findticket });
+            return res.status(404).json({ message: "Resim dosyası bulunamadı", ticket: findticket , Prices : FindHotel.priceList });
         }
     } catch (error) {
         console.log("Hata:", error);
@@ -563,6 +568,6 @@ app.post('/reset-password/:token', async (req, res) => {
       res.status(401).json({ valid: false, message: "Geçersiz token" });
     }
   });
-  https.createServer(options, app).listen(443, () => {
+  app.listen(443, () => {
     console.log('HTTPS server is running on https://localhost');
   });
