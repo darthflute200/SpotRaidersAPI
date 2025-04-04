@@ -120,7 +120,7 @@ const upload = multer({ storage: storage });
 
 
 
-app.post("/createadmin" , async(req,res) =>{
+app.post("/api/createadmin" , async(req,res) =>{
     try{
         await User.create({
             email : req.body.email,
@@ -133,7 +133,7 @@ app.post("/createadmin" , async(req,res) =>{
         console.log(error);
     }
 })
-app.post("/createcustomer" , async(req,res) =>{
+app.post("/api/createcustomer" , async(req,res) =>{
     try{
         await User.create({
             email : req.body.email,
@@ -148,7 +148,7 @@ app.post("/createcustomer" , async(req,res) =>{
         console.log(error);
     }
 })
-app.get("/getticketsuser/:id" , async(req,res) =>{
+app.get("/api/getticketsuser/:id" , async(req,res) =>{
     try{
         const id = req.params.id;
         const user = await User.findById(id);
@@ -161,7 +161,7 @@ app.get("/getticketsuser/:id" , async(req,res) =>{
         console.log(error);
     }
 })
-app.post("/signin" , async(req,res) =>{
+app.post("/api/signin" , async(req,res) =>{
     try{
         const user = await User.findOne({
             email : req.body.email
@@ -180,7 +180,7 @@ app.post("/signin" , async(req,res) =>{
         console.log(error);
     }
 })
-app.post("/saveotel" , async(req,res) =>{
+app.post("/api/saveotel" , async(req,res) =>{
     try{
         const hotel = req.body;
 
@@ -210,7 +210,7 @@ app.post("/saveotel" , async(req,res) =>{
         res.json({message: "başarısız"});
     }
 })
-app.get("/gethotels" , async(req,res) =>{
+app.get("/api/gethotels" , async(req,res) =>{
     try{
         const AllHotels = await Otel.find();
         res.json({HotelList : AllHotels})
@@ -219,7 +219,7 @@ app.get("/gethotels" , async(req,res) =>{
         console.log(error);
     }
 })
-app.get("/gethotel/:id" , async(req,res) =>{
+app.get("/api/gethotel/:id" , async(req,res) =>{
     try{
         const Hotel = await Otel.findById(req.params.id);
         res.json({HotelName: Hotel.OtelName , PriceList : Hotel.priceList, HotelAdress: Hotel.OtelAdress, HotelTel : Hotel.OtelTel})
@@ -228,7 +228,7 @@ app.get("/gethotel/:id" , async(req,res) =>{
         console.log(error);
     }
 })
-app.post("/updatehotel/:id" , async(req,res) =>{
+app.post("/api/updatehotel/:id" , async(req,res) =>{
     try{
         const id = req.params.id
         const hotel = req.body;
@@ -250,7 +250,7 @@ app.post("/updatehotel/:id" , async(req,res) =>{
         res.json({message: "başarısız"});
     }
 });
-app.post("/createticket", upload.single("Photo"), async (req, res) => {
+app.post("/api/createticket", upload.single("Photo"), async (req, res) => {
     const ticket = req.body;
     const parsedItemList = JSON.parse(ticket.itemlist);
     const otelNumber = ticket.OtelNumber;
@@ -302,7 +302,7 @@ app.post("/createticket", upload.single("Photo"), async (req, res) => {
         res.status(500).json({ message: "Sunucu hatası" });
     }
 });
-app.get("/gettickets" , async(req,res)=>{
+app.get("/api/gettickets" , async(req,res)=>{
     try{
         const Tickets = await Ticket.find();
         res.json({tickets : Tickets})
@@ -311,7 +311,7 @@ app.get("/gettickets" , async(req,res)=>{
         console.log(error)
     }
 })
-app.get("/getticket/:id", async (req, res) => {
+app.get("/api/getticket/:id", async (req, res) => {
     try {
         const ticketid = req.params.id;
         const findticket = await Ticket.findById(ticketid);
@@ -348,7 +348,7 @@ app.get("/getticket/:id", async (req, res) => {
         return res.status(500).json({ message: "Bir hata oluştu", error });
     }
 });
-app.post("/printticket" , async(req,res) =>{
+app.post("/api/printticket" , async(req,res) =>{
     try{
         const id = req.body.id;
         const ticket = await Ticket.findById(id);
@@ -379,7 +379,7 @@ app.post("/printticket" , async(req,res) =>{
         console.log(error);
     }
 })
-app.post("/getpdf" , async(req,res) =>{
+app.post("/api/getpdf" , async(req,res) =>{
     const { Date, hotelId } = req.body;
     try{
         const otel = await Otel.findById(hotelId);
@@ -399,7 +399,7 @@ app.post("/getpdf" , async(req,res) =>{
         console.log(error)
     }
 })
-app.post("/updateticket/:id", async (req, res) => {
+app.post("/api/updateticket/:id", async (req, res) => {
     const id = req.params.id; 
     const updatedData = req.body; 
   
@@ -426,7 +426,7 @@ app.post("/updateticket/:id", async (req, res) => {
       });
     }
   });
-app.post("/deleteticket/:id" , async (req,res) =>{
+app.post("/api/deleteticket/:id" , async (req,res) =>{
     try{
         const ticket = await Ticket.findById(req.params.id);
         const filePath = path.join(__dirname, 'public', "uploads" , ticket.file);  
@@ -443,7 +443,7 @@ app.post("/deleteticket/:id" , async (req,res) =>{
         res.status(404).json({message: "Başarısız"});
     }
 })
-app.get("/homepage/:year" , async(req,res) =>{
+app.get("/api/homepage/:year" , async(req,res) =>{
     const dateParam = req.params.year;
     const targetDate = new Date(dateParam);
     const startOfDay = new Date(Date.UTC(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), 0, 0, 0, 0));
@@ -499,7 +499,7 @@ app.get("/homepage/:year" , async(req,res) =>{
         console.log(error)
     }
 })
-app.post("/request-password-reset" , async(req,res) =>{
+app.post("/api/request-password-reset" , async(req,res) =>{
     const email = req.body.email
     try{
         const user = await User.findOne({email: email});
@@ -528,7 +528,7 @@ app.post("/request-password-reset" , async(req,res) =>{
         console.log(error);
     }
 })
-app.post('/reset-password/:token', async (req, res) => {
+app.post('/api/reset-password/:token', async (req, res) => {
     const { token } = req.params;
     const { Password } = req.body;
   
@@ -543,7 +543,7 @@ app.post('/reset-password/:token', async (req, res) => {
       res.status(400).send('Geçersiz veya süresi dolmuş token.');
     }
   });
-  app.get("/sendmail" , async(req,res) =>{
+  app.get("/api/sendmail" , async(req,res) =>{
     try{
         const today = new Date();
         const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()); 
@@ -558,7 +558,7 @@ app.post('/reset-password/:token', async (req, res) => {
         console.log(error)
     }
   })
-  app.post("/verify-token", (req, res) => {
+  app.post("/api/verify-token", (req, res) => {
     const { token } = req.body;
   
     try {
@@ -568,6 +568,6 @@ app.post('/reset-password/:token', async (req, res) => {
       res.status(401).json({ valid: false, message: "Geçersiz token" });
     }
   });
-  app.listen(443, () => {
-    console.log('HTTPS server is running on https://localhost');
+  https.createServer(options, app).listen(3000, () => {
+    console.log('HTTPS sunucusu 3000 portunda çalışıyor!');
   });
